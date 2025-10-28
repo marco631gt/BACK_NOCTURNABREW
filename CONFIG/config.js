@@ -1,15 +1,18 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
-// Cargar las variables del archivo .env
+// Load environment variables
 dotenv.config();
 
-//Obtiene las variables del .env para completar el MongoURI
-const mongoURI = `mongodb+srv://${process.env.USER}:${process.env.PSW}@${process.env.CLUSTER}/`;
+// Build MongoDB connection string
+const mongoURI = `mongodb+srv://${process.env.USER}:${process.env.PSW}@${process.env.CLUSTER}/${process.env.DBNAME}?retryWrites=true&w=majority`;
 
-//Intenta conectar
+// Connect to MongoDB
 mongoose.connect(mongoURI)
-  .then(() => console.log('Conectado a MongoDB')) //Mensaje de Conexión exitosa
-  .catch(err => console.error('Error al conectar a MongoDB:', err)); //Mensaje de error
+  .then(() => {
+    console.log('✅ Conectado a MongoDB');
+    console.log('📦 Base de datos:', mongoose.connection.name);
+  })
+  .catch(err => console.error('❌ Error al conectar a MongoDB:', err));
 
 export default mongoose;

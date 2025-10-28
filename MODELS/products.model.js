@@ -18,7 +18,7 @@ const productSchema = new mongoose.Schema({
         type: String,
         require: true
     },
-    desription:{
+    description:{
         type: String,
         require: true
     },
@@ -27,3 +27,5 @@ const productSchema = new mongoose.Schema({
         require: true
     }
 })
+
+export const Products = mongoose.model('Products', productSchema, 'Products');
