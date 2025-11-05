@@ -19,7 +19,7 @@ export async function login(req, res, next) {
         id: user._id,
         nombre: user.nombre,
         email: user.email,
-        rol: user.rol
+        role: user.role
       }
     });
 
