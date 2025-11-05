@@ -29,13 +29,27 @@ export async function getById(req, res, next) {
     }
 }
 
-export async function listByName(req, res, next) {
+export async function getAll(req, res, next) {
+    try {
+        const products = await service.getAllProducts();
+        res.status(200).json({
+            message: "Here are all the products",
+            values: products
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+
+
+export async function listByCategory(req, res, next) {
     try{
-        const nameToFind = req.params.name;
-        const productByName = await service.listProductByName(nameToFind);
+        const categoryToFind = req.params.category;
+        const productsByCategory = await service.listProductByCategory(categoryToFind);
         res.status(201).json({
-            message: `Here are the products with the name ${nameToFind}`,
-            values: productByName
+            message: `Here are the products with the category ${categoryToFind}`,
+            values: productsByCategory
         })
     }catch(err){
         next(err);
@@ -63,7 +77,7 @@ export async function updateById(req, res, next) {
 
         const productUpdate = await service.updateProductById(req.params.id, newInfo);
         res.status(201).json({
-            message: `The produc with the id ${req.params.id} was updated`,
+            message: `The product with the id ${req.params.id} was updated`,
             values: productUpdate
         })
 

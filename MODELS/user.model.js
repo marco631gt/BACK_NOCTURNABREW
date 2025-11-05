@@ -1,7 +1,7 @@
 import mongoose, {version} from "mongoose";
 
 const userSchema = new mongoose.Schema({
-    nombre:{
+    name:{
         type: String,
         require: true,
         lowercase: true,
@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-    rol:{
+    role:{
         type: String,
         require: false,
     }

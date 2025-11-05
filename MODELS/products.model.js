@@ -25,6 +25,10 @@ const productSchema = new mongoose.Schema({
     available:{
         type: Boolean,
         required: true
+    },
+    url:{
+        type: String,
+        required: true
     }
 })
 

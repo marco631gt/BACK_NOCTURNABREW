@@ -22,8 +22,17 @@ export async function getProductById(id) {
     return exists;
 }
 
-export async function listProductByName(name) {
-    const exists = await Products.find({"name":name});
+export async function getAllProducts() {
+    try {
+        const products = await Products.find(); 
+        return products;
+    } catch (err) {
+        throw new Error('Error fetching all products: ' + err.message);
+    }
+}
+
+export async function listProductByCategory(category) {
+    const exists = await Products.find({"category":category});
     return exists;
 }
 
