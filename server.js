@@ -9,12 +9,6 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
 
-// 🧠 Configuración CORS personalizada
-app.use(cors({
-  origin: '*', // o si quieres, solo "http://localhost:5173"
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'ngrok-skip-browser-warning'], // 👈 agrega esto
-}));
 
 // Middleware para manejar JSON
 app.use(express.json());
