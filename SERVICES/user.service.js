@@ -1,18 +1,26 @@
 import { Users } from "../MODELS/user.model.js";
+import bcrypt from "bcryptjs";
 
 export async function createUser(data) {
-    console.log(data);
-    const exists = await Users.findOne({email:data.email});
-    if (exists !== null){
-        const err = new Error (`User with the email: ${data.email} already exists !`);
-        err.status = 409; //Error de recurso ocupado o duplicado
+    const exists = await Users.findOne({ email: data.email });
+    if (exists !== null) {
+        const err = new Error(`User with the email: ${data.email} already exists!`);
+        err.status = 409; 
         throw err;
     }
     if (!data.role) {
         data.role = "customer";
     }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(data.password, salt);
+    data.password = hashedPassword;
+
     const doc = await Users.create(data);
-    return doc.toObject();
+    const userObject = doc.toObject();
+    delete userObject.password; 
+
+    return userObject;
 }
 
 export async function getAllUsers() {

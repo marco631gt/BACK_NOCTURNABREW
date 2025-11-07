@@ -1,8 +1,7 @@
-// SERVICES/login.service.js
-import { Users } from '../MODELS/user.model.js';
+import { Users } from "../MODELS/user.model.js";
+import bcrypt from "bcryptjs";
 
 export async function authenticateUser(email, password) {
-  // Buscar el usuario por email
   const user = await Users.findOne({ email });
   if (!user) {
     const err = new Error("Usuario no encontrado");
@@ -10,12 +9,15 @@ export async function authenticateUser(email, password) {
     throw err;
   }
 
-  // Verificar contraseña (sin hash por ahora)
-  if (user.password !== password) {
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
     const err = new Error("Contraseña incorrecta");
     err.status = 401;
     throw err;
   }
 
-  return user;
+  const userData = user.toObject();
+  delete userData.password;
+
+  return userData;
 }
