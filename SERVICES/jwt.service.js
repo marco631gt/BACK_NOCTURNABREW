@@ -12,5 +12,26 @@ export const jwtService = {
     } catch {
       return null;
     }
-  }
+  },
+  
+  generateUserToken(user) {
+    return jwt.sign(
+      {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+      },
+      tokenJWT.jwt.userSecret,
+      { expiresIn: "1d" }
+    );
+  },
+
+  verifyUserToken(token) {
+    try {
+      return jwt.verify(token, tokenJWT.jwt.userSecret);
+    } catch {
+      return null;
+    }
+  },
 };
+

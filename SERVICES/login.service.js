@@ -1,5 +1,6 @@
 import { Users } from "../MODELS/user.model.js";
 import bcrypt from "bcryptjs";
+import { jwtService } from "./jwt.service.js";
 
 export async function authenticateUser(email, password) {
   const user = await Users.findOne({ email });
@@ -19,5 +20,13 @@ export async function authenticateUser(email, password) {
   const userData = user.toObject();
   delete userData.password;
 
-  return userData;
+  const token = jwtService.generateUserToken({
+    id: user._id,
+    email: user.email
+  });
+
+  return {
+    user: userData,
+    token,
+  };
 }

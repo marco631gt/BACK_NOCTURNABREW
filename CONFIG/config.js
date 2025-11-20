@@ -18,6 +18,7 @@ mongoose.connect(mongoURI)
 export default mongoose;
 export const tokenJWT = {
   jwt: {
-    appSecret : process.env.APP_JWT_SECRET || "AppToken no definido"
+    appSecret : process.env.APP_JWT_SECRET || "AppToken no definido",
+    userSecret: process.env.USER_SECRET,
   }
 };
