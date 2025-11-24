@@ -44,21 +44,41 @@ export async function getAllStock() {
     }
 }
 
-export async function updateStockById(id, newInfo) {
-    return await Stock.findOneAndUpdate({ id }, newInfo, { new: true });
-}
 
-export async function updateStockQuantity(id, quantity) {
+export async function updateStockItemById(id, newInfo) {
+
+    if (newInfo.name) {
+        const nameExists = await Stock.findOne({ name: newInfo.name });
+        if (nameExists && nameExists.id !== Number(id)) {
+            const err = new Error(`Ingredient ${newInfo.name} already exists`);
+            err.status = 409;
+            throw err;
+        }
+    }
+
+    if (newInfo.id) {
+        const idExists = await Stock.findOne({ id: newInfo.id });
+        if (idExists && idExists.id !== Number(id)) {
+            const err = new Error(`Another ingredient with id ${newInfo.id} already exists`);
+            err.status = 409;
+            throw err;
+        }
+    }
+
     const updated = await Stock.findOneAndUpdate(
         { id },
-        { quantity },
+        newInfo,
         { new: true }
     );
 
-    if (!updated) return null;
+    if (!updated) {
+        const err = new Error("Stock item not found");
+        err.status = 404;
+        throw err;
+    }
 
     const products = await Products.find({
-        "ingredients.ingredientId": updated._id
+        "ingredients.ingredientId": updated.id 
     });
 
     for (const product of products) {

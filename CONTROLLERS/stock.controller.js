@@ -40,35 +40,21 @@ export async function getAll(req, res, next) {
     }
 }
 
-export async function updateById(req, res, next) {
+
+export async function updateStockById(req, res, next) {
     try {
-        const updated = await service.updateStockById(req.params.id, req.body);
+        const newInfo = {};
+
+        if (req.body.name) newInfo.name = req.body.name;
+        if (req.body.unit) newInfo.unit = req.body.unit;
+        if (req.body.quantity !== undefined) newInfo.quantity = req.body.quantity;
+
+        const updated = await service.updateStockItemById(req.params.id, newInfo);
 
         res.status(200).json({
-            message: `The stock item with id ${req.params.id} was updated`,
+            message: `Stock item with id ${req.params.id} was updated`,
             values: updated
         });
-
-    } catch (err) {
-        next(err);
-    }
-}
-
-export async function updateQuantity(req, res, next) {
-    try {
-        const { quantity } = req.body;
-
-        if (quantity == null) {
-            return res.status(400).json({ error: "Quantity is required" });
-        }
-
-        const updated = await service.updateStockQuantity(req.params.id, quantity);
-
-        res.status(200).json({
-            message: `Quantity updated for stock item with id ${req.params.id}`,
-            values: updated
-        });
-
     } catch (err) {
         next(err);
     }

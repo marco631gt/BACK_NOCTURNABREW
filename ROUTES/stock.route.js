@@ -7,8 +7,7 @@ const router = Router();
 router.post('/create', requireAppToken, requireUserToken, controller.create);
 router.get('/id/:id', requireAppToken, requireUserToken, controller.getById);
 router.get('/getAll', requireAppToken, requireUserToken, controller.getAll);
-router.patch('/update/:id', requireAppToken, requireUserToken, controller.updateById);
-router.patch('/updateQuantity/:id', requireAppToken, requireUserToken, controller.updateQuantity);
+router.patch('/update/:id', requireAppToken, requireUserToken, controller.updateStockById);
 router.get('/delete/:id', requireAppToken, requireUserToken, controller.deleteById);
 
 export default router;
