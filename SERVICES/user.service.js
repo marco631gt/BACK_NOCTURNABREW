@@ -8,9 +8,6 @@ export async function createUser(data) {
         err.status = 409; 
         throw err;
     }
-    if (!data.role) {
-        data.role = "customer";
-    }
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(data.password, salt);

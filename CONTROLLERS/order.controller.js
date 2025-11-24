@@ -1,4 +1,4 @@
-import * as service from "../SERVICES/ticket.service.js";
+import * as service from "../SERVICES/order.service.js";
 
 export const create = async (req, res, next) => {
   try {

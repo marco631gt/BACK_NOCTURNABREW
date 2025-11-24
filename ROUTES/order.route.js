@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as controller from "../CONTROLLERS/ticket.controller.js";
+import * as controller from "../CONTROLLERS/order.controller.js";
 import { requireAppToken, requireUserToken } from '../MIDDLEWARE/authMiddleware.js';
 
 const router = Router();
