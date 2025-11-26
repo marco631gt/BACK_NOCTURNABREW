@@ -59,6 +59,7 @@ export async function updateById(req, res, next) {
         if (req.body.category) newInfo.category = req.body.category;
         if (req.body.description) newInfo.description = req.body.description;
         if (req.body.ingredients) newInfo.ingredients = req.body.ingredients;
+        if (req.body.url) newInfo.url = req.body.url;
         if (req.body.hasOwnProperty('available'))
             newInfo.available = req.body.available;
 

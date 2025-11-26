@@ -35,6 +35,12 @@ export async function getUserByEmail(email) {
 }
 
 export async function updateUserByEmail(email, newInfo) {
+    if (newInfo.password) {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newInfo.password, salt);
+        newInfo.password = hashedPassword;
+    }
+
     const exists = await Users.findOneAndUpdate({email}, newInfo);
     return exists;
 }
