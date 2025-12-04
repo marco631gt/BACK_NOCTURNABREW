@@ -3,7 +3,7 @@ import { Products } from "../MODELS/products.model.js";
 
 async function recalcProductAvailability(product) {
     for (const ing of product.ingredients) {
-        const stockItem = await Stock.findOne({ _id: ing.ingredientId });
+        const stockItem = await Stock.findOne({ id: ing.ingredientId });
 
         if (!stockItem || stockItem.quantity < ing.quantity) {
             return false;
@@ -47,6 +47,13 @@ export async function getAllStock() {
 
 export async function updateStockItemById(id, newInfo) {
 
+    const exists = await Stock.findOne({ id });
+    if (!exists) {
+        const err = new Error("Stock item not found");
+        err.status = 404;
+        throw err;
+    }
+
     if (newInfo.name) {
         const nameExists = await Stock.findOne({ name: newInfo.name });
         if (nameExists && nameExists.id !== Number(id)) {
@@ -63,6 +70,10 @@ export async function updateStockItemById(id, newInfo) {
             err.status = 409;
             throw err;
         }
+    }
+
+    if (newInfo.quantity !== undefined) {
+        newInfo.quantity = exists.quantity + newInfo.quantity;
     }
 
     const updated = await Stock.findOneAndUpdate(

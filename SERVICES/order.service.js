@@ -1,5 +1,5 @@
 import Order from "../MODELS/order.model.js";
-import crypto from "crypto";
+import { recalcProductAvailability } from "../SERVICES/products.service.js";
 import { Products } from "../MODELS/products.model.js";
 import { Stock } from "../MODELS/stock.model.js";
 
@@ -24,7 +24,6 @@ export const createOrder = async ({ items, notes }) => {
       throw err;
     }
 
-    // Validar stock
     for (const ing of product.ingredients) {
       const stockItem = await Stock.findOne({ id: ing.ingredientId }); 
 
@@ -45,7 +44,6 @@ export const createOrder = async ({ items, notes }) => {
       }
     }
 
-    // Descontar stock
     for (const ing of product.ingredients) {
       const requiredAmount = ing.quantity * item.qty;
 
@@ -112,9 +110,41 @@ export const updateOrderStatus = async (orderId, newStatus) => {
   const allowedStatuses = ["pending", "paid", "canceled"];
 
   if (!allowedStatuses.includes(newStatus)) {
-    const err = new Error("Estado no válido");
+    const err = new Error("Invalid status");
     err.status = 400;
     throw err;
+  }
+
+  const order = await Order.findOne({ orderId });
+  if (!order) {
+    const err = new Error("Order not found");
+    err.status = 404;
+    throw err;
+  }
+
+  if (newStatus === "canceled" && order.status !== "canceled") {
+    for (const item of order.items) {
+      const product = await Products.findById(item.productId);
+      if (!product) continue;
+
+      for (const ing of product.ingredients) {
+        const amountToRestore = ing.quantity * item.qty;
+
+      
+        await Stock.findOneAndUpdate(
+          { id: ing.ingredientId },
+          { $inc: { quantity: amountToRestore } }
+        );
+      }
+    }
+
+    const allProducts = await Products.find();
+
+    for (const p of allProducts) {
+      const available = await recalcProductAvailability(p);
+      p.available = available;
+      await p.save();
+    }
   }
 
   const updated = await Order.findOneAndUpdate(
@@ -122,12 +152,7 @@ export const updateOrderStatus = async (orderId, newStatus) => {
     { status: newStatus },
     { new: true }
   );
-
-  if (!updated) {
-    const err = new Error("Orden no encontrada");
-    err.status = 404;
-    throw err;
-  }
+  
 
   return updated;
 };

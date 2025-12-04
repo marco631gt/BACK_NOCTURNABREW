@@ -1,9 +1,9 @@
 import { Products } from '../MODELS/products.model.js';
 import { Stock } from '../MODELS/stock.model.js';
 
-async function recalcProductAvailability(product) {
+export async function recalcProductAvailability(product) {
     for (const ing of product.ingredients) {
-        const stockItem = await Stock.findOne({ id: ing.ingredientId }); // ⬅️ ahora busca por ID numérico
+        const stockItem = await Stock.findOne({ id: ing.ingredientId }); 
 
         if (!stockItem || stockItem.quantity < ing.quantity) {
             return false;
@@ -87,8 +87,10 @@ export async function updateProductById(id, newInfo) {
 
     if (!updated) return null;
 
+    if (!newInfo.hasOwnProperty("available")) {
     updated.available = await recalcProductAvailability(updated);
     await updated.save();
+    }
 
     return updated;
 }

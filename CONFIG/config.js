@@ -8,7 +8,8 @@ dotenv.config();
 const mongoURI = `mongodb+srv://${process.env.USER}:${process.env.PSW}@${process.env.CLUSTER}/${process.env.DBNAME}?retryWrites=true&w=majority`;
 
 // Connect to MongoDB
-mongoose.connect(mongoURI)
+mongoose.connect(mongoURI,)
+  
   .then(() => {
     console.log('Conectado a MongoDB');
     console.log('Base de datos:', mongoose.connection.name);
